@@ -1,0 +1,138 @@
+.mainContainer {
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.mapWrapper {
+    margin-top: 30px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.headerPlace {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.headerPlace h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.ridePlanner {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    width: 70%;
+    margin: 0 auto;
+}   
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.label {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: #666;
+    border-radius: 50%;
+}
+
+.line {
+    width: 1px;
+    height: 30px;
+    background-color: #ccc;
+}
+
+.square {
+    width: 6px;
+    height: 6px;
+    background-color: #000;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.input {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+    outline: none;
+}
+
+.coordinatesMain{
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.lovesCoordinates{
+    width: 100%;
+    display: flex;
+}
+
+.a{
+    width: 100%;
+    display: flex;
+    border-radius: 4px;
+    background-color: var(--white-grey);
+    font-size: 16px;
+    padding: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lovesCoordinatesText{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mapBox{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
