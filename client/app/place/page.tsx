@@ -1,4 +1,5 @@
 import styles from "./style.module.css";
+import Map from "../[components]/map/mape";
 
 export default function Place() {
   return (
@@ -66,6 +67,10 @@ export default function Place() {
             </a>
         </div>
       </div>
+      <div className={styles.mapBox}>
+        <Map />
+      </div>
+
     </main>
   );
 }
