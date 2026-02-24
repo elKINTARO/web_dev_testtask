@@ -1,0 +1,172 @@
+.container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0 auto;
+  background: #f9f9f9;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mapSection {
+  flex: 1;
+  position: relative;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+.mapOverlay {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.helpBtn, .moreBtn, .iconBtn {
+  background: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.content {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 25px 25px 0 0;
+  padding: 20px;
+  margin-top: -20px;
+  z-index: 2;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.dragHandle {
+  width: 40px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  margin: 0 auto 15px;
+}
+
+.title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.subtotalHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.foodList {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: space-between;
+}
+
+.foodItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.foodItem img {
+  border-radius: 8px;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background: #eee;
+}
+
+.droneCard {
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.droneInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.droneIcon {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.droneText{
+
+    img {
+        width: 70px;
+    }
+}
+
+.droneText h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.droneText p {
+  margin: 5px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.dronePrice {
+  text-align: right;
+}
+
+.mainPrice {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.taxText {
+  color: #999;
+  font-size: 12px;
+}
+
+.paymentRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.userEmail {
+  margin-left: 10px;
+  color: #333;
+}
+
+.mainButton {
+  width: 100%;
+  background: black;
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
