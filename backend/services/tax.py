@@ -36,6 +36,11 @@ async def get_county(lat: float, lon: float) -> str:
     )
     # Strip " County" suffix if present (e.g. "Albany County" -> "Albany")
     county = county.removesuffix(" County").strip()
+    if not county:
+        raise ValueError(
+            f"Could not determine county for coordinates lat={lat}, lon={lon}. "
+            "Location may be outside New York State."
+        )
     return county
 
 

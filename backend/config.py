@@ -1,11 +1,14 @@
 import pathlib
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://postgres:password@localhost:5432/drone_delivery"
+    DB_ECHO: bool = False
 
     # Nominatim reverse geocoding
     NOMINATIM_URL: str = "https://nominatim.openstreetmap.org/reverse"
@@ -19,8 +22,7 @@ class Settings(BaseSettings):
     DEFAULT_LIMIT: int = 20
     MAX_LIMIT: int = 100
 
-    class Config:
-        env_file = ".env"
+    MAX_UPLOAD_SIZE_MB: int = 10
 
 
 settings = Settings()
