@@ -3,21 +3,60 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-from models import DroneStatus, OrderStatus
+from models import OrderStatus
+
+
+class DishResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    cafe_id: int
+
+    model_config = {"from_attributes": True}
+
+
+class CafeResponse(BaseModel):
+    id: int
+    name: str
+    image: Optional[str]
+    rating: float
+    category: str
+    delivery_time: str
+    lat: float
+    lon: float
+
+    model_config = {"from_attributes": True}
+
+
+class CafeDetailResponse(CafeResponse):
+    """Cafe with its full dish list."""
+    dishes: list[DishResponse] = []
+
+
+class OrderItemCreate(BaseModel):
+    dish_id: int
+    quantity: int = Field(..., ge=1, description="Must be at least 1")
 
 
 class OrderCreate(BaseModel):
-    start_lat: float = Field(..., ge=-90, le=90, description="Pickup latitude")
-    start_lon: float = Field(..., ge=-180, le=180, description="Pickup longitude")
+    cafe_id: int = Field(..., description="Cafe to order from")
     end_lat: float = Field(..., ge=-90, le=90, description="Delivery latitude")
     end_lon: float = Field(..., ge=-180, le=180, description="Delivery longitude")
-    subtotal: float = Field(..., gt=0, description="Order subtotal in USD")
+    items: list[OrderItemCreate] = Field(..., min_length=1, description="At least one dish required")
+
+
+class OrderItemResponse(BaseModel):
+    id: int
+    order_id: int
+    dish_id: int
+    quantity: int
+
+    model_config = {"from_attributes": True}
 
 
 class OrderResponse(BaseModel):
     id: int
-    start_lat: float
-    start_lon: float
+    cafe_id: int
     end_lat: float
     end_lon: float
     subtotal: float
@@ -27,10 +66,10 @@ class OrderResponse(BaseModel):
     distance_km: float
     estimated_flight_time: float
     status: OrderStatus
-    drone_id: Optional[int]
     timestamp: datetime
+    items: list[OrderItemResponse] = []
 
-    model_config = {"from_attributes": True}
+    model_config = {"from_attributes": False}
 
 
 class OrderListResponse(BaseModel):

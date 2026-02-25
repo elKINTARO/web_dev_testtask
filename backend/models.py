@@ -1,3 +1,4 @@
+import enum
 from datetime import datetime, timezone
 from typing import Any, Optional
 import enum
@@ -16,19 +17,37 @@ class OrderStatus(str, enum.Enum):
     damaged = "damaged"
 
 
-class DroneStatus(str, enum.Enum):
-    available = "available"
-    flying = "flying"
-    charging = "charging"
-    maintenance = "maintenance"
+class Cafe(Base):
+    __tablename__ = "cafes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    image: Mapped[str] = mapped_column(String, nullable=True)
+    rating: Mapped[float] = mapped_column(Float, nullable=False)
+    category: Mapped[str] = mapped_column(String, nullable=False)
+    delivery_time: Mapped[str] = mapped_column(String, nullable=False)
+    lat: Mapped[float] = mapped_column(Float, nullable=False)
+    lon: Mapped[float] = mapped_column(Float, nullable=False)
+
+
+class Dish(Base):
+    __tablename__ = "dishes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    cafe_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("cafes.id"), nullable=False, index=True
+    )
 
 
 class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    start_lat: Mapped[float] = mapped_column(Float, nullable=False)
-    start_lon: Mapped[float] = mapped_column(Float, nullable=False)
+    cafe_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("cafes.id"), nullable=False, index=True
+    )
     end_lat: Mapped[float] = mapped_column(Float, nullable=False)
     end_lon: Mapped[float] = mapped_column(Float, nullable=False)
     subtotal: Mapped[float] = mapped_column(Float, nullable=False)
@@ -40,9 +59,6 @@ class Order(Base):
     status: Mapped[OrderStatus] = mapped_column(
         Enum(OrderStatus), default=OrderStatus.pending, nullable=False
     )
-    drone_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("drones.id"), nullable=True, index=True
-    )
     timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -50,15 +66,14 @@ class Order(Base):
     )
 
 
-class Drone(Base):
-    __tablename__ = "drones"
+class OrderItem(Base):
+    __tablename__ = "order_items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    battery_level: Mapped[float] = mapped_column(Float, nullable=False)
-    status: Mapped[DroneStatus] = mapped_column(
-        Enum(DroneStatus), default=DroneStatus.available, nullable=False
+    order_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("orders.id"), nullable=False, index=True
     )
-    current_lat: Mapped[float] = mapped_column(Float, nullable=False)
-    current_lon: Mapped[float] = mapped_column(Float, nullable=False)
-    max_radius: Mapped[float] = mapped_column(Float, nullable=False)
-    max_weight: Mapped[float] = mapped_column(Float, nullable=False)
+    dish_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("dishes.id"), nullable=False, index=True
+    )
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)

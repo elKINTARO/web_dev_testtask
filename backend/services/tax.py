@@ -76,19 +76,15 @@ async def calculate_order_tax(
     subtotal: float,
 ) -> dict[str, Any]:
     """
-    Full pipeline: end coordinates -> county -> rate -> totals.
+    Full pipeline: delivery coordinates -> county -> rate -> totals.
     Tax is calculated based on delivery location (end_lat/end_lon).
-    Returns a dict ready to be stored in the DB.
+    Returns a dict with tax breakdown ready for the Order model.
     """
     county = await get_county(end_lat, end_lon)
     tax_key, rate = get_tax_rate(county)
     tax_amount, total_amount = calculate_tax(subtotal, rate)
 
     return {
-        "start_lat": start_lat,
-        "start_lon": start_lon,
-        "end_lat": end_lat,
-        "end_lon": end_lon,
         "subtotal": subtotal,
         "tax_amount": tax_amount,
         "total_amount": total_amount,
