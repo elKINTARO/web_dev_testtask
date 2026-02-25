@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from database import init_db
+from routers.cafes import router as cafes_router
 from routers.orders import router as orders_router
 
 
@@ -13,13 +14,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Drone Delivery Tax API",
-    description="Calculates and stores composite NY sales tax for drone delivery orders.",
-    version="1.0.0",
+    title="Drone Food Delivery API",
+    description="Order food from cafes, delivered by drone. Includes NY sales tax calculation.",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
 app.include_router(orders_router)
+app.include_router(cafes_router)
 
 
 @app.get("/health", tags=["health"])
