@@ -152,12 +152,12 @@
   padding: 10px;
   border: none;
   border-radius: 8px;
-  background: var(--tematik-block-slate-anthracite);
+  background: var(--grey);
   color: white;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .viewBtn:hover {
-  background: #e85d00;
+  background: var(--tematik-block-slate-anthracite);
 }

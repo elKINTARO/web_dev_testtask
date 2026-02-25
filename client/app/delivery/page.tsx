@@ -1,6 +1,8 @@
+"use client";
+import { useLastURL } from "../[cash]/LastURL";
 import styles from "./style.module.css";
 
-export default function Place() {
+export default function Delivery() {
   const restaurants = [
     {
       id: 1,
@@ -28,10 +30,13 @@ export default function Place() {
     },
   ];
 
+
+  const { goToLastURL } = useLastURL();
+  
   return (
     <div className={styles.place}>
       <div className={styles.header}>
-        <a href="#" aria-label="Back">
+        <a onClick={goToLastURL} aria-label="Back">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M6.9375 13.5L13.5 21L10.5103 21L2.63527 12L10.5103 3L13.5 3L6.9375 10.5L21 10.5L21 13.5L6.9375 13.5Z" fill="black"/>
           </svg>
