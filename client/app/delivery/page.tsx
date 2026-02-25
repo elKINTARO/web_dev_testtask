@@ -1,38 +1,28 @@
 "use client";
+import { restaurantsData } from "@/data/cafe/cafe";
 import { useLastURL } from "../[cash]/LastURL";
 import styles from "./style.module.css";
+import { useState } from "react";
+import DishModal from "../[components]/menu/menu";
 
 export default function Delivery() {
-  const restaurants = [
-    {
-      id: 1,
-      name: "Italiano Restaurant",
-      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
-      rating: 4.8,
-      category: "Italian Cuisine",
-      deliveryTime: "25-35 min",
-    },
-    {
-      id: 2,
-      name: "Sushi Master",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
-      rating: 4.7,
-      category: "Japanese Cuisine",
-      deliveryTime: "30-40 min",
-    },
-    {
-      id: 3,
-      name: "Burger House",
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-      rating: 4.6,
-      category: "Fast Food",
-      deliveryTime: "20-30 min",
-    },
-  ];
-
-
+  const restaurants = restaurantsData
   const { goToLastURL } = useLastURL();
+  const [selectedRestaurant, setSelectedRestaurant] = useState(restaurants[0]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDish, setSelectedDish] = useState<string | null>(null);
   
+  const openMenu = (restaurant: typeof restaurants[0]) => {
+    setSelectedRestaurant(restaurant);
+    setIsModalOpen(true);
+  };
+
+  const handleSelectDish = (dish: any) => {
+    setSelectedDish(dish.name);
+    setIsModalOpen(false);
+    alert(`Ви вибрали: ${dish.name}`);
+  };
+
   return (
     <div className={styles.place}>
       <div className={styles.header}>
@@ -79,11 +69,18 @@ export default function Delivery() {
                 <span>{item.deliveryTime}</span>
               </div>
 
-              <button className={styles.viewBtn}>View Menu</button>
+              <button onClick={() => openMenu(item)} className={styles.viewBtn}>View Menu</button>
             </div>
           </div>
         ))}
       </div>
+
+      <DishModal
+        restaurant={selectedRestaurant}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleSelectDish}
+      />
     </div>
   );
 }
