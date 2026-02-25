@@ -5,6 +5,11 @@
   --foreground: #171717;
   --grey: #666;
   --white-grey: #f1f1f1;
+  --text-white-grey: #e8e8e8;
+  --tematik-block-platinum-grey: #A9ADB2;
+  --tematik-block-slate-anthracite: #3D4043;
+  --tematik-block-matte-black: #1A1B1C;
+  --tematik-block-safety-orange: #FF5F00;
 }
 
 @theme inline {

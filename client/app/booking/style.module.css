@@ -3,6 +3,7 @@
   margin: 0 auto;
   background: #f9f9f9;
   height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -21,12 +22,11 @@
 
 .mapOverlay {
   position: absolute;
-  top: 15px;
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 0 15px;
   box-sizing: border-box;
+  align-items: center;
 }
 
 .helpBtn, .moreBtn, .iconBtn {
@@ -36,6 +36,11 @@
   border-radius: 20px;
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.topButtons{
+  display: flex;
+  gap: 10px;
 }
 
 .content {
