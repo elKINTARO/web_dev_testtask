@@ -1,10 +1,12 @@
 .mainContainer {
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 .mapWrapper {
@@ -30,11 +32,13 @@
 }
 
 .ridePlanner {
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    width: 70%;
-    margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  flex-wrap: wrap;
 }   
 
 .inputGroup {
@@ -101,12 +105,13 @@
     outline: none;
 }
 
-.coordinatesMain{
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    width: 70%;
-    margin: 0 auto;
+.coordinatesMain {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .lovesCoordinates{
@@ -131,8 +136,21 @@
     align-items: center;
 }
 
-.mapBox{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.mapBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mapLoading {
+  height: 550px;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-grey);
+  border-radius: 15px;
+  color: #666;
 }

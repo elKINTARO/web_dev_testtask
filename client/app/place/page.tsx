@@ -1,11 +1,55 @@
 "use client";
+
+import dynamic from "next/dynamic";
+import { useCallback, useState } from "react";
 import styles from "./style.module.css";
-import Map from "../[components]/map/mape";
 import { useLastURL } from "../[cash]/LastURL";
+
+const Map = dynamic(() => import("../[components]/map/mape"), {
+  ssr: false,
+  loading: () => (
+    <div className={styles.mapLoading}>Loading map...</div>
+  ),
+});
+
+const DEFAULT_FROM: [number, number] = [28.5284, 78.5284];
+const DEFAULT_TO: [number, number] = [35.9284, 62.9284];
+
+function parseCoord(value: string): number {
+  const n = parseFloat(value);
+  return Number.isFinite(n) ? n : 0;
+}
 
 export default function Place() {
   const { goToLastURL } = useLastURL();
-  
+  const [fromPos, setFromPos] = useState<[number, number]>(DEFAULT_FROM);
+  const [toPos, setToPos] = useState<[number, number]>(DEFAULT_TO);
+
+  const handleFromLat = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFromPos((prev) => [parseCoord(e.target.value), prev[1]]);
+    },
+    []
+  );
+  const handleFromLon = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFromPos((prev) => [prev[0], parseCoord(e.target.value)]);
+    },
+    []
+  );
+  const handleToLat = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setToPos((prev) => [parseCoord(e.target.value), prev[1]]);
+    },
+    []
+  );
+  const handleToLon = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setToPos((prev) => [prev[0], parseCoord(e.target.value)]);
+    },
+    []
+  );
+
   return (
     <main className={styles.mainContainer}>
       <div className={styles.header}>
@@ -18,7 +62,6 @@ export default function Place() {
       </div>
 
       <div className={styles.ridePlanner}>
-        
         <div className={styles.inputGroup}>
           <span className={styles.label}>from</span>
           <div className={styles.inputWrapper}>
@@ -28,8 +71,22 @@ export default function Place() {
               <div className={styles.square}></div>
             </div>
             <div className={styles.fields}>
-              <input type="number" className={styles.input} defaultValue="28.5284" />
-              <input type="number" className={styles.input} defaultValue="78.5284" />
+              <input
+                type="number"
+                className={styles.input}
+                value={fromPos[0]}
+                onChange={handleFromLat}
+                placeholder="lat"
+                step="any"
+              />
+              <input
+                type="number"
+                className={styles.input}
+                value={fromPos[1]}
+                onChange={handleFromLon}
+                placeholder="lon"
+                step="any"
+              />
             </div>
           </div>
         </div>
@@ -43,12 +100,25 @@ export default function Place() {
               <div className={styles.square}></div>
             </div>
             <div className={styles.fields}>
-              <input type="number" className={styles.input} defaultValue="35.9284" />
-              <input type="number" className={styles.input} defaultValue="62.9284" />
+              <input
+                type="number"
+                className={styles.input}
+                value={toPos[0]}
+                onChange={handleToLat}
+                placeholder="lat"
+                step="any"
+              />
+              <input
+                type="number"
+                className={styles.input}
+                value={toPos[1]}
+                onChange={handleToLon}
+                placeholder="lon"
+                step="any"
+              />
             </div>
           </div>
         </div>
-
       </div>
 
       <div className={styles.coordinatesMain}>
@@ -72,7 +142,7 @@ export default function Place() {
         </div>
       </div>
       <div className={styles.mapBox}>
-        <Map />
+        <Map fromPos={fromPos} toPos={toPos} />
       </div>
 
     </main>

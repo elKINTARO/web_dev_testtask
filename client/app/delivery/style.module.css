@@ -1,7 +1,8 @@
 .place {
   padding: 40px;
   background: #f4f6f9;
-  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 .header {
@@ -72,13 +73,37 @@
   background: #ddd;
 }
 
-.basket{
-    display: flex;
-    transition: transform 0.3s ease;
+.basket {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
 
-    &:hover {
-        transform: scale(1.1);
-    }
+.basket:hover {
+  transform: scale(1.1);
+}
+
+.cartBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--tematik-block-safety-orange, #ff5f00);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .categories {
