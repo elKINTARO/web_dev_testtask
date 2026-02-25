@@ -1,24 +1,64 @@
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Optional
+import enum
 
-from sqlalchemy import DateTime, Float, Integer, JSON
+from sqlalchemy import DateTime, Float, Integer, JSON, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
+
+
+class OrderStatus(str, enum.Enum):
+    pending = "pending"
+    flying = "flying"
+    delivered = "delivered"
+    lost = "lost"
+    damaged = "damaged"
+
+
+class DroneStatus(str, enum.Enum):
+    available = "available"
+    flying = "flying"
+    charging = "charging"
+    maintenance = "maintenance"
 
 
 class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    lat: Mapped[float] = mapped_column(Float, nullable=False)
-    lon: Mapped[float] = mapped_column(Float, nullable=False)
+    start_lat: Mapped[float] = mapped_column(Float, nullable=False)
+    start_lon: Mapped[float] = mapped_column(Float, nullable=False)
+    end_lat: Mapped[float] = mapped_column(Float, nullable=False)
+    end_lon: Mapped[float] = mapped_column(Float, nullable=False)
     subtotal: Mapped[float] = mapped_column(Float, nullable=False)
     tax_amount: Mapped[float] = mapped_column(Float, nullable=False)
     total_amount: Mapped[float] = mapped_column(Float, nullable=False)
     breakdown: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    distance_km: Mapped[float] = mapped_column(Float, nullable=False)
+    estimated_flight_time: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(
+        Enum(OrderStatus), default=OrderStatus.pending, nullable=False
+    )
+    drone_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("drones.id"), nullable=True, index=True
+    )
     timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
+
+
+class Drone(Base):
+    __tablename__ = "drones"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    battery_level: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[DroneStatus] = mapped_column(
+        Enum(DroneStatus), default=DroneStatus.available, nullable=False
+    )
+    current_lat: Mapped[float] = mapped_column(Float, nullable=False)
+    current_lon: Mapped[float] = mapped_column(Float, nullable=False)
+    max_radius: Mapped[float] = mapped_column(Float, nullable=False)
+    max_weight: Mapped[float] = mapped_column(Float, nullable=False)

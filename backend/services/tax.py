@@ -69,19 +69,26 @@ def calculate_tax(subtotal: float, rate: float) -> tuple[float, float]:
 
 
 async def calculate_order_tax(
-    lat: float, lon: float, subtotal: float
+    start_lat: float,
+    start_lon: float,
+    end_lat: float,
+    end_lon: float,
+    subtotal: float,
 ) -> dict[str, Any]:
     """
-    Full pipeline: coordinates -> county -> rate -> totals.
+    Full pipeline: end coordinates -> county -> rate -> totals.
+    Tax is calculated based on delivery location (end_lat/end_lon).
     Returns a dict ready to be stored in the DB.
     """
-    county = await get_county(lat, lon)
+    county = await get_county(end_lat, end_lon)
     tax_key, rate = get_tax_rate(county)
     tax_amount, total_amount = calculate_tax(subtotal, rate)
 
     return {
-        "lat": lat,
-        "lon": lon,
+        "start_lat": start_lat,
+        "start_lon": start_lon,
+        "end_lat": end_lat,
+        "end_lon": end_lon,
         "subtotal": subtotal,
         "tax_amount": tax_amount,
         "total_amount": total_amount,
