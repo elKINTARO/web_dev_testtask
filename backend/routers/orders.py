@@ -115,3 +115,15 @@ async def list_orders(
     items = result.scalars().all()
 
     return OrderListResponse(total=total, limit=limit, offset=offset, items=items)
+
+
+@router.get("/{order_id}", response_model=OrderResponse)
+async def get_order(
+    order_id: int,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    result = await db.execute(select(Order).where(Order.id == order_id))
+    order = result.scalar_one_or_none()
+    if order is None:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")
+    return order
