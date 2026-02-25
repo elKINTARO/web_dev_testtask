@@ -1,0 +1,73 @@
+# Alembic Database Migrations
+
+This directory contains database schema migrations for the Drone Delivery API using SQLAlchemy ORM and Alembic.
+
+## Quick Start
+
+### Generate a new migration
+
+```bash
+cd backend
+alembic revision --autogenerate -m "description of changes"
+```
+
+Example:
+```bash
+alembic revision --autogenerate -m "add delivery_notes to orders"
+```
+
+### Apply all pending migrations
+
+```bash
+alembic upgrade head
+```
+
+### Rollback one migration
+
+```bash
+alembic downgrade -1
+```
+
+### Check migration status
+
+```bash
+alembic current
+```
+
+## Configuration
+
+- **env.py** — Alembic runtime configuration. Loads database URL from `config.py` and configures async engine.
+- **script.py.mako** — Template for new migration scripts.
+- **versions/** — Directory containing all migration files.
+
+## Important Notes
+
+- Use **async context** — all migrations run through `asyncio.run()`
+- Database URL is read from `.env` via `config.Settings`, **NOT** from `alembic.ini`
+- Always test migrations locally before committing:
+  ```bash
+  docker compose up -d              # start DB
+  alembic upgrade head              # apply migrations
+  alembic downgrade -1              # test rollback
+  ```
+- Commit only finalized migrations. Avoid committing incomplete `.py` files.
+
+## Workflow
+
+1. Make changes to `backend/models.py`
+2. Generate migration: `alembic revision --autogenerate -m "clear description"`
+3. Review the generated file in `versions/`
+4. Apply: `alembic upgrade head`
+5. Test locally
+6. Commit: `git add backend/alembic/versions/XXXX_*.py`
+
+## Troubleshooting
+
+**Error: "No such table"**
+→ Run: `alembic upgrade head`
+
+**Error: "Column doesn't allow NULL"**
+→ Migration tried to add `NOT NULL` column to existing table. Add `server_default` or `nullable=True`.
+
+**DB is out of sync with code**
+→ Run: `alembic downgrade base` then `alembic upgrade head` (clears and reapplies all)

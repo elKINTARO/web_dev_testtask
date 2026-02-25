@@ -77,3 +77,44 @@ class OrderListResponse(BaseModel):
     limit: int
     offset: int
     items: list[OrderResponse]
+
+
+class OrderStatusUpdate(BaseModel):
+    status: OrderStatus
+
+
+class DroneCreate(BaseModel):
+    battery_level: float = Field(..., ge=0, le=100, description="Battery level (%)")
+    current_lat: float = Field(..., ge=-90, le=90)
+    current_lon: float = Field(..., ge=-180, le=180)
+    max_radius: float = Field(..., gt=0, description="Max delivery radius (km)")
+    max_weight: float = Field(..., gt=0, description="Max payload weight (kg)")
+
+
+class DroneLocationUpdate(BaseModel):
+    current_lat: float = Field(..., ge=-90, le=90, description="New latitude")
+    current_lon: float = Field(..., ge=-180, le=180, description="New longitude")
+    battery_level: Optional[float] = Field(None, ge=0, le=100, description="Updated battery level (%)")
+
+
+class DroneLocationResponse(BaseModel):
+    id: int
+    current_lat: float
+    current_lon: float
+    battery_level: float
+    status: DroneStatus
+
+    model_config = {"from_attributes": True}
+
+
+class DroneResponse(BaseModel):
+    id: int
+    battery_level: float
+    status: DroneStatus
+    current_lat: float
+    current_lon: float
+    max_radius: float
+    max_weight: float
+
+    model_config = {"from_attributes": True}
+

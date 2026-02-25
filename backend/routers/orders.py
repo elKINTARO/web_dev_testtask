@@ -16,6 +16,20 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
+VALID_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
+    OrderStatus.pending: {OrderStatus.flying},
+    OrderStatus.flying: {OrderStatus.delivered, OrderStatus.lost, OrderStatus.damaged},
+    OrderStatus.delivered: set(),
+    OrderStatus.lost: set(),
+    OrderStatus.damaged: set(),
+}
+
+TERMINAL_DRONE_STATUS: dict[OrderStatus, DroneStatus] = {
+    OrderStatus.delivered: DroneStatus.available,
+    OrderStatus.lost: DroneStatus.available,
+    OrderStatus.damaged: DroneStatus.maintenance,
+}
+
 
 async def _build_order_response(order: Order, db: AsyncSession) -> OrderResponse:
     """Load OrderItems for an order and build the response schema."""
@@ -111,14 +125,28 @@ async def create_order(
     return await _build_order_response(order, db)
 
 
-@router.get("", response_model=OrderListResponse)
-async def list_orders(
+@router.patch("/{order_id}/status", response_model=OrderResponse)
+async def update_order_status(
+    order_id: int,
+    payload: OrderStatusUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
-    limit: int = Query(default=settings.DEFAULT_LIMIT, ge=1, le=settings.MAX_LIMIT),
-    offset: int = Query(default=0, ge=0),
 ):
-    total_result = await db.execute(select(func.count()).select_from(Order))
-    total = total_result.scalar_one()
+    result = await db.execute(select(Order).where(Order.id == order_id))
+    order = result.scalars().first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")
+
+    allowed = VALID_TRANSITIONS.get(order.status, set())
+    if payload.status not in allowed:
+        allowed_values = [s.value for s in allowed]
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Cannot transition order from '{order.status.value}' "
+                f"to '{payload.status.value}'. "
+                f"Allowed: {allowed_values if allowed_values else 'none (terminal state)'}."
+            ),
+        )
 
     result = await db.execute(
         select(Order).order_by(Order.timestamp.desc()).limit(limit).offset(offset)
