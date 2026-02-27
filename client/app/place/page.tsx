@@ -1,9 +1,12 @@
 "use client";
 
+import { Restaurant, restaurantsData } from "@/data/cafe/cafe";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
 import styles from "./style.module.css";
 import { useLastURL } from "../[cash]/LastURL";
+import { useCart } from "../context/CartContext";
+import { useRouter } from "next/navigation";
 
 const Map = dynamic(() => import("../[components]/map/mape"), {
   ssr: false,
@@ -21,6 +24,10 @@ function parseCoord(value: string): number {
 }
 
 export default function Place() {
+  const router = useRouter();
+  const restaurants = restaurantsData;
+  const [selectedRestaurant, setSelectedRestaurant] = useState(restaurants[0]);
+  const { addItem } = useCart();
   const { goToLastURL } = useLastURL();
   const [fromPos, setFromPos] = useState<[number, number]>(DEFAULT_FROM);
   const [toPos, setToPos] = useState<[number, number]>(DEFAULT_TO);
@@ -49,6 +56,21 @@ export default function Place() {
     },
     []
   );
+
+  function SendBox(): void {
+        const box: Restaurant = {
+      id: 999,
+      name: "Box",
+      image: "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-square-cardboard-box-png-image_10211619.png",
+      rating: 0,
+      category: "Box",
+      deliveryTime: "25-35 min",
+      dishes: []
+    };
+
+    addItem(box, null, 1);
+    router.push("/booking");
+  }
 
   return (
     <main className={styles.mainContainer}>
@@ -119,6 +141,10 @@ export default function Place() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className={styles.actionPlace}>
+        <button onClick={SendBox} className={styles.Btn}>Send</button>
       </div>
 
       <div className={styles.coordinatesMain}>

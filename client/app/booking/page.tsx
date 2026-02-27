@@ -44,66 +44,87 @@ export default function Booking() {
 
         <div className={styles.foodList}>
           {items.length === 0 ? (
-            <p className={styles.emptyMessage}>No items. Add dishes from Delivery.</p>
+            <p className={styles.emptyMessage}>
+              No items. Add dishes from Delivery.
+            </p>
           ) : (
-            items.map((item) => (
-              <div key={`${item.restaurant.id}-${item.dish.id}`} className={styles.foodItem}>
-                <img src={item.dish.image} alt={item.dish.name} />
-                <div className={styles.foodItemInfo}>
-                  <p>{item.dish.name}</p>
-                  <small>
-                    ${item.dish.price.toFixed(2)} × {item.quantity} = $
-                    {(item.dish.price * item.quantity).toFixed(2)}
-                  </small>
-                  <div className={styles.foodItemActions}>
-                    <div className={styles.quantity}>
+            items.map((item) => {
+              const isBox = item.dish === null;
+
+              return (
+                <div
+                  key={`${item.restaurant.id}-${item.dish?.id ?? "box"}`}
+                  className={styles.foodItem}
+                >
+                  <img
+                    src={isBox ? item.restaurant.image : item.dish!.image}
+                    alt={isBox ? "Box" : item.dish!.name}
+                  />
+
+                  <div className={styles.foodItemInfo}>
+                    <p>{isBox ? "Box" : item.dish!.name}</p>
+
+                    {!isBox && (
+                      <small>
+                        ${item.dish!.price.toFixed(2)} × {item.quantity} = $
+                        {(item.dish!.price * item.quantity).toFixed(2)}
+                      </small>
+                    )}
+
+                    {isBox && (
+                      <small>
+                        Special delivery × {item.quantity}
+                      </small>
+                    )}
+
+                    <div className={styles.foodItemActions}>
+                      <div className={styles.quantity}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateQuantity(
+                              item.restaurant.id,
+                              item.dish?.id ?? null,
+                              item.quantity - 1
+                            )
+                          }
+                        >
+                          −
+                        </button>
+
+                        <span>{item.quantity}</span>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateQuantity(
+                              item.restaurant.id,
+                              item.dish?.id ?? null,
+                              item.quantity + 1
+                            )
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
                         type="button"
                         onClick={() =>
-                          updateQuantity(
+                          removeItem(
                             item.restaurant.id,
-                            item.dish.id,
-                            item.quantity - 1
+                            item.dish?.id ?? null
                           )
                         }
-                        aria-label="Decrease quantity"
+                        className={styles.removeBtn}
                       >
-                        −
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateQuantity(
-                            item.restaurant.id,
-                            item.dish.id,
-                            item.quantity + 1
-                          )
-                        }
-                        aria-label="Increase quantity"
-                      >
-                        +
+                        🗑
                       </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeItem(item.restaurant.id, item.dish.id)
-                      }
-                      className={styles.removeBtn}
-                      aria-label="Remove item"
-                      title="Remove from cart"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
-                      </svg>
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
