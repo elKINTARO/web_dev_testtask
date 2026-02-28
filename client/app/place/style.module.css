@@ -1,0 +1,177 @@
+.mainContainer {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+.mapWrapper {
+    margin-top: 30px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.ridePlanner {
+    flex-wrap: nowrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+}   
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.actionPlace{
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 700px;
+}
+
+.Btn{
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: var(--grey);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.Btn:hover {
+  background: var(--tematik-block-slate-anthracite);
+}
+
+.label {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: #666;
+    border-radius: 50%;
+}
+
+.line {
+    width: 1px;
+    height: 30px;
+    background-color: #ccc;
+}
+
+.square {
+    width: 6px;
+    height: 6px;
+    background-color: #000;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.input {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+    outline: none;
+}
+
+.coordinatesMain {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.lovesCoordinates{
+    width: 100%;
+    display: flex;
+}
+
+.a{
+    width: 100%;
+    display: flex;
+    border-radius: 4px;
+    background-color: var(--white-grey);
+    font-size: 16px;
+    padding: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lovesCoordinatesText{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mapBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mapLoading {
+  height: 550px;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-grey);
+  border-radius: 15px;
+  color: #666;
+}
