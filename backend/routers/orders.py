@@ -1,16 +1,18 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
 from database import get_db
 from models import Cafe, Dish, Order, OrderItem, OrderStatus
-from schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderStatusUpdate
+from schemas import OrderCreate, OrderImportResponse, OrderResponse, OrderItemResponse, OrderStatusUpdate
 from services.tax import calculate_order_tax
 from utils.routing import estimate_flight_time, haversine_distance
+import csv
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -166,3 +168,64 @@ async def get_all_orders(db: Annotated[AsyncSession, Depends(get_db)]):
     if not orders:
         raise HTTPException(status_code=404, detail="No orders found.")
     return [await _build_order_response(order, db) for order in orders]
+
+@router.post("/import-csv", response_model=OrderImportResponse)
+async def import_orders_from_csv( cafe_id: int, file: UploadFile = File(...),db: AsyncSession = Depends(get_db)):
+    cafe_result = await db.execute(select(Cafe).where(Cafe.id == cafe_id))
+    cafe = cafe_result.scalars().first()
+    if not cafe:
+        raise HTTPException(status_code=404, detail="Cafe not found")
+
+    contents = await file.read()
+    buffer = io.StringIO(contents.decode('utf-8'))
+    reader = csv.DictReader(buffer)
+    
+    created_count = 0
+    errors = []
+    rows = list(reader)
+
+    for idx, row in enumerate(rows):
+        try:
+            lat = float(row['latitude'])
+            lon = float(row['longitude'])
+            subtotal = float(row['subtotal'])
+            
+            distance_km = haversine_distance(cafe.lat, cafe.lon, lat, lon)
+            flight_time = estimate_flight_time(distance_km)
+            
+            tax_data = await calculate_order_tax(
+                cafe.lat, cafe.lon,
+                lat, lon,
+                subtotal
+            )
+
+            new_order = Order(
+                cafe_id=cafe.id,
+                end_lat=lat,
+                end_lon=lon,
+                subtotal=tax_data["subtotal"],
+                tax_amount=tax_data["tax_amount"],
+                total_amount=tax_data["total_amount"],
+                breakdown=tax_data["breakdown"],
+                distance_km=distance_km,
+                estimated_flight_time=flight_time,
+                status=OrderStatus.pending,
+            )
+            
+            db.add(new_order)
+            created_count += 1
+            
+            if created_count % 100 == 0:
+                await db.flush()
+
+        except Exception as e:
+            errors.append(f"Row {idx+1}: {str(e)}")
+            continue
+
+    await db.commit()
+
+    return OrderImportResponse(
+        total_received=len(rows),
+        successfully_created=created_count,
+        errors=errors[:10]
+    )
