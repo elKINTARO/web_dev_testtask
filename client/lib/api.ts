@@ -25,28 +25,6 @@ async function fetchApi<T>(
   return res.json();
 }
 
-export interface ApiCafe {
-  id: number;
-  name: string;
-  image: string | null;
-  rating: number;
-  category: string;
-  delivery_time: string;
-  lat: number;
-  lon: number;
-}
-
-export interface ApiDish {
-  id: number;
-  image: string
-  name: string;
-  price: number;
-  cafe_id: number;
-}
-
-export interface ApiOrder {
-  id: number;
-  cafe_id: number;
 export interface ApiOrderDishItem {
   dish_id: number;
   quantity: number;
@@ -75,13 +53,46 @@ export interface ApiOrderResponse {
   estimated_flight_time: number;
   status: string;
   timestamp: string;
+  items: { id: number; order_id: number; dish_id: number; quantity: number }[];
+}
+
+export interface ApiCafe {
+  id: number;
+  name: string;
+  image: string | null;
+  rating: number;
+  category: string;
+  delivery_time: string;
+  lat: number;
+  lon: number;
+}
+
+export interface ApiDish {
+  id: number;
+  image: string
+  name: string;
+  price: number;
+  cafe_id: number;
+}
+
+export interface ApiOrder {
+  id: number;
+  cafe_id: number;
+  end_lat: number;
+  end_lon: number;
+  subtotal: number;
+  tax_amount: number;
+  total_amount: number;
+  distance_km: number;
+  estimated_flight_time: number;
+  status: string;
+  timestamp: string;
   items: {
     id: number;
     dish_id: number;
     quantity: number;
   }[];
   cafe_name?: string; 
-  items: { id: number; order_id: number; dish_id: number; quantity: number }[];
 }
 
 export interface ApiCafeDetail extends ApiCafe {
@@ -109,12 +120,6 @@ export async function getCafe(id: number): Promise<ApiCafeDetail> {
   return fetchApi<ApiCafeDetail>(`/cafes/${id}`);
 }
 
-export async function getOrders(): Promise<ApiOrder[]> {
-  return fetchApi<ApiOrder[]>("/orders");
-}
-
-export async function createOrder(payload: OrderCreate) {
-  return fetchApi<unknown>("/orders", {
 export async function getOrders(): Promise<ApiOrderResponse[]> {
   return fetchApi<ApiOrderResponse[]>("/orders");
 }
