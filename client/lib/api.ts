@@ -44,6 +44,9 @@ export interface ApiDish {
   cafe_id: number;
 }
 
+export interface ApiOrder {
+  id: number;
+  cafe_id: number;
 export interface ApiOrderDishItem {
   dish_id: number;
   quantity: number;
@@ -72,6 +75,12 @@ export interface ApiOrderResponse {
   estimated_flight_time: number;
   status: string;
   timestamp: string;
+  items: {
+    id: number;
+    dish_id: number;
+    quantity: number;
+  }[];
+  cafe_name?: string; 
   items: { id: number; order_id: number; dish_id: number; quantity: number }[];
 }
 
@@ -100,6 +109,12 @@ export async function getCafe(id: number): Promise<ApiCafeDetail> {
   return fetchApi<ApiCafeDetail>(`/cafes/${id}`);
 }
 
+export async function getOrders(): Promise<ApiOrder[]> {
+  return fetchApi<ApiOrder[]>("/orders");
+}
+
+export async function createOrder(payload: OrderCreate) {
+  return fetchApi<unknown>("/orders", {
 export async function getOrders(): Promise<ApiOrderResponse[]> {
   return fetchApi<ApiOrderResponse[]>("/orders");
 }
@@ -113,4 +128,21 @@ export async function createOrder(payload: OrderCreate): Promise<ApiOrderRespons
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function importOrdersCsv(cafe_id: number, file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${API_BASE}/orders/import-csv?cafe_id=${cafe_id}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Import failed" }));
+    throw new Error(err.detail || "Error during CSV import");
+  }
+
+  return res.json();
 }

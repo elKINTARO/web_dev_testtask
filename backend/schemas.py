@@ -100,7 +100,11 @@ class OrderListResponse(BaseModel):
 class OrderStatusUpdate(BaseModel):
     status: OrderStatus
 
-
+class OrderImportResponse(BaseModel):
+    total_received: int
+    successfully_created: int
+    errors: list[str]
+    
 class DroneCreate(BaseModel):
     battery_level: float = Field(..., ge=0, le=100, description="Battery level (%)")
     current_lat: float = Field(..., ge=-90, le=90)

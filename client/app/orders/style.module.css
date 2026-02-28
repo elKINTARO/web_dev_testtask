@@ -119,6 +119,113 @@
   max-height: 90vh;
   border-radius: 16px;
   overflow: hidden;
+}
+
+
+
+.cafeInput {
+ width: 100%;
+ height: 40px;
+ line-height: 28px;
+ padding: 0 1rem;
+ padding-left: 0.5rem;
+ border: 2px solid transparent;
+ border-radius: 8px;
+ outline: none;
+ color: #0d0c22;
+ transition: .3s ease;
+}
+
+.cafeInput:focus, input:hover {
+ outline: none;
+ border-color: var(--tematik-block-slate-anthracite);
+ background-color: #fff;
+}
+
+.icon {
+ position: absolute;
+ left: 1rem;
+ width: 1rem;
+ height: 1rem;
+}
+
+
+
+.importBtn {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.importBtn:hover {
+  opacity: 0.8;
+}
+
+.modalImport {
+  max-width: 420px;
+  width: 100%;
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: modalAppear 0.3s ease-out;
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px dashed #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.submitBtn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitBtn:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
   display: flex;
   flex-direction: column;
 }
