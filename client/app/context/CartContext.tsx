@@ -8,19 +8,19 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Dish, Restaurant } from "@/data/cafe/cafe";
+import type { Dish, Restaurant } from "@/lib/types";
 
 export interface CartItem {
   restaurant: Restaurant;
-  dish: Dish | null;
+  dish: Dish;
   quantity: number;
 }
 
 interface CartContextValue {
   items: CartItem[];
-  addItem: (restaurant: Restaurant, dish: Dish | null, quantity?: number) => void;
-  removeItem: (restaurantId: number, dishId: number | null) => void;
-  updateQuantity: (restaurantId: number, dishId: number | null, quantity: number) => void;
+  addItem: (restaurant: Restaurant, dish: Dish, quantity?: number) => void;
+  removeItem: (restaurantId: number, dishId: number) => void;
+  updateQuantity: (restaurantId: number, dishId: number, quantity: number) => void;
   clearCart: () => void;
   total: number;
   itemCount: number;
@@ -32,12 +32,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = useCallback(
-    (restaurant: Restaurant, dish: Dish | null, quantity = 1) => {
+    (restaurant: Restaurant, dish: Dish, quantity = 1) => {
       setItems((prev) => {
         const existing = prev.find(
           (i) =>
             i.restaurant.id === restaurant.id &&
-            i.dish?.id === dish?.id
+            i.dish.id === dish.id
         );
 
         if (existing) {
@@ -55,13 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const removeItem = useCallback(
-    (restaurantId: number, dishId: number | null) => {
+    (restaurantId: number, dishId: number) => {
       setItems((prev) =>
         prev.filter(
           (i) =>
             !(
               i.restaurant.id === restaurantId &&
-              i.dish?.id === dishId
+              i.dish.id === dishId
             )
         )
       );
@@ -70,7 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const updateQuantity = useCallback(
-    (restaurantId: number, dishId: number | null, quantity: number) => {
+    (restaurantId: number, dishId: number, quantity: number) => {
       if (quantity <= 0) {
         removeItem(restaurantId, dishId);
         return;
@@ -79,7 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems((prev) =>
         prev.map((i) =>
           i.restaurant.id === restaurantId &&
-          i.dish?.id === dishId
+          i.dish.id === dishId
             ? { ...i, quantity }
             : i
         )
@@ -93,8 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const total = useMemo(
     () =>
       items.reduce(
-        (sum, item) =>
-          sum + (item.dish?.price ?? 0) * item.quantity,
+        (sum, item) => sum + item.dish.price * item.quantity,
         0
       ),
     [items]

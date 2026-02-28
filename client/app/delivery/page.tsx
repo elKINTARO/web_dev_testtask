@@ -1,31 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { restaurantsData } from "@/data/cafe/cafe";
 import { useLastURL } from "../[cash]/LastURL";
 import { useCart } from "@/app/context/CartContext";
+import { useCafes, useCafeDetail } from "@/app/hooks/useCafes";
+import type { Restaurant } from "@/lib/types";
 import styles from "./style.module.css";
 import DishModal from "../[components]/menu/menu";
 import CartDrawer from "../[components]/cart/CartDrawer";
 import Toast from "../[components]/toast/Toast";
 
 export default function Delivery() {
-  const restaurants = restaurantsData;
+  const [category, setCategory] = useState<string | undefined>();
+  const { cafes, loading, error } = useCafes(category);
+  const [selectedCafeId, setSelectedCafeId] = useState<number | null>(null);
+  const { cafe: selectedCafe, loading: detailLoading } = useCafeDetail(selectedCafeId);
   const { goToLastURL } = useLastURL();
   const { addItem, itemCount } = useCart();
-  const [selectedRestaurant, setSelectedRestaurant] = useState(restaurants[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const openMenu = (restaurant: (typeof restaurants)[0]) => {
-    setSelectedRestaurant(restaurant);
+  const openMenu = (cafe: Restaurant) => {
+    setSelectedCafeId(cafe.id);
     setIsModalOpen(true);
   };
 
-  const handleSelectDish = (dish: (typeof restaurants)[0]["dishes"][0]) => {
-    addItem(selectedRestaurant, dish);
-    setToastMessage(`Added: ${dish.name}`);
+  const handleSelectDish = (dish: Restaurant["dishes"][0]) => {
+    if (selectedCafe) {
+      addItem(selectedCafe, dish);
+      setToastMessage(`Added: ${dish.name}`);
+    }
   };
 
   useEffect(() => {
@@ -69,14 +74,17 @@ export default function Delivery() {
         </button>     
       </div>
       <div className={styles.categories}>
-        <button>All</button>
-        <button>Italian</button>
-        <button>Japanese</button>
-        <button>Fast Food</button>
+        <button onClick={() => setCategory(undefined)}>All</button>
+        <button onClick={() => setCategory("Italian")}>Italian</button>
+        <button onClick={() => setCategory("Japanese")}>Japanese</button>
+        <button onClick={() => setCategory("Fast Food")}>Fast Food</button>
       </div>
 
+      {error && <p className={styles.error}>{error}</p>}
+      {loading && <p className={styles.loading}>Loading cafes...</p>}
+
       <div className={styles.grid}>
-        {restaurants.map((item) => (
+        {cafes.map((item) => (
           <div key={item.id} className={styles.card}>
             <div className={styles.image}>
               <img src={item.image} alt={item.name} />
@@ -98,9 +106,13 @@ export default function Delivery() {
       </div>
 
       <DishModal
-        restaurant={selectedRestaurant}
+        restaurant={selectedCafe}
+        loading={detailLoading}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedCafeId(null);
+        }}
         onSelect={handleSelectDish}
       />
 

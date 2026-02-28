@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from database import get_db
 from models import Cafe, Dish, Order, OrderItem, OrderStatus
-from schemas import OrderCreate, OrderListResponse, OrderResponse, OrderItemResponse
+from schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderStatusUpdate
 from services.tax import calculate_order_tax
 from utils.routing import estimate_flight_time, haversine_distance
 
@@ -22,12 +22,6 @@ VALID_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
     OrderStatus.delivered: set(),
     OrderStatus.lost: set(),
     OrderStatus.damaged: set(),
-}
-
-TERMINAL_DRONE_STATUS: dict[OrderStatus, DroneStatus] = {
-    OrderStatus.delivered: DroneStatus.available,
-    OrderStatus.lost: DroneStatus.available,
-    OrderStatus.damaged: DroneStatus.maintenance,
 }
 
 
@@ -148,13 +142,10 @@ async def update_order_status(
             ),
         )
 
-    result = await db.execute(
-        select(Order).order_by(Order.timestamp.desc()).limit(limit).offset(offset)
-    )
-    orders = result.scalars().all()
-
-    items = [await _build_order_response(o, db) for o in orders]
-    return OrderListResponse(total=total, limit=limit, offset=offset, items=items)
+    order.status = payload.status
+    await db.commit()
+    await db.refresh(order)
+    return await _build_order_response(order, db)
 
 
 @router.get("/{order_id}", response_model=OrderResponse)

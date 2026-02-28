@@ -1,10 +1,11 @@
 "use client";
 
-import type { Dish, Restaurant } from "@/data/cafe/cafe";
+import type { Dish, Restaurant } from "@/lib/types";
 import styles from "./style.module.css";
 
 interface DishModalProps {
-  restaurant: Restaurant;
+  restaurant: Restaurant | null;
+  loading?: boolean;
   isOpen: boolean;
   onClose: () => void;
   onSelect: (dish: Dish) => void;
@@ -12,6 +13,7 @@ interface DishModalProps {
 
 export default function DishModal({
   restaurant,
+  loading = false,
   isOpen,
   onClose,
   onSelect,
@@ -27,9 +29,14 @@ export default function DishModal({
               <path d="M6.9375 13.5L13.5 21L10.5103 21L2.63527 12L10.5103 3L13.5 3L6.9375 10.5L21 10.5L21 13.5L6.9375 13.5Z" fill="black"/>
             </svg>
           </button>
-          <h1>Виберіть страву з {restaurant.name}</h1>
+          <h1>
+            {loading ? "Loading..." : restaurant ? `Виберіть страву з ${restaurant.name}` : "Menu"}
+          </h1>
         </div>
         <div className={styles.dishListWrapper}>
+        {loading ? (
+          <p className={styles.loading}>Loading menu...</p>
+        ) : restaurant ? (
         <ul className={styles.dishList}>
           {restaurant.dishes.map((dish) => (
             <li
@@ -45,6 +52,7 @@ export default function DishModal({
             </li>
           ))}
         </ul>
+        ) : null}
         </div>
       </div>
     </div>

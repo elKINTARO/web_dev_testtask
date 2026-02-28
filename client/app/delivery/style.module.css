@@ -186,3 +186,17 @@
 .viewBtn:hover {
   background: var(--tematik-block-slate-anthracite);
 }
+
+.error {
+  color: #c00;
+  padding: 16px;
+  background: #ffe0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  color: #666;
+  padding: 20px;
+  text-align: center;
+}

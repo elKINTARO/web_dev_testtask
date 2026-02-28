@@ -1,12 +1,11 @@
 "use client";
 
-import { Restaurant, restaurantsData } from "@/data/cafe/cafe";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./style.module.css";
 import { useLastURL } from "../[cash]/LastURL";
-import { useCart } from "../context/CartContext";
-import { useRouter } from "next/navigation";
+import { usePackageRoute } from "@/app/context/PackageRouteContext";
 
 const Map = dynamic(() => import("../[components]/map/mape"), {
   ssr: false,
@@ -23,14 +22,28 @@ function parseCoord(value: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+function isValidCoord(coord: number): boolean {
+  return Number.isFinite(coord);
+}
+
 export default function Place() {
   const router = useRouter();
-  const restaurants = restaurantsData;
-  const [selectedRestaurant, setSelectedRestaurant] = useState(restaurants[0]);
-  const { addItem } = useCart();
   const { goToLastURL } = useLastURL();
+  const { setRoute } = usePackageRoute();
   const [fromPos, setFromPos] = useState<[number, number]>(DEFAULT_FROM);
   const [toPos, setToPos] = useState<[number, number]>(DEFAULT_TO);
+
+  const canSendBox =
+    isValidCoord(fromPos[0]) &&
+    isValidCoord(fromPos[1]) &&
+    isValidCoord(toPos[0]) &&
+    isValidCoord(toPos[1]);
+
+  const handleSendBox = useCallback(() => {
+    if (!canSendBox) return;
+    setRoute(fromPos, toPos);
+    router.push("/booking");
+  }, [canSendBox, fromPos, toPos, setRoute, router]);
 
   const handleFromLat = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,21 +69,6 @@ export default function Place() {
     },
     []
   );
-
-  function SendBox(): void {
-        const box: Restaurant = {
-      id: 999,
-      name: "Box",
-      image: "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-square-cardboard-box-png-image_10211619.png",
-      rating: 0,
-      category: "Box",
-      deliveryTime: "25-35 min",
-      dishes: []
-    };
-
-    addItem(box, null, 1);
-    router.push("/booking");
-  }
 
   return (
     <main className={styles.mainContainer}>
@@ -144,12 +142,19 @@ export default function Place() {
       </div>
 
       <div className={styles.actionPlace}>
-        <button onClick={SendBox} className={styles.Btn}>Send</button>
+        <button
+          type="button"
+          onClick={handleSendBox}
+          className={styles.Btn}
+          disabled={!canSendBox}
+        >
+          Send Box
+        </button>
       </div>
 
       <div className={styles.coordinatesMain}>
         <div className={styles.lovesCoordinates}>
-            <a href="" className={styles.a}>
+            <button type="button" className={styles.a}>
                 <div className={styles.lovesCoordinatesText}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                         <path d="M16 0C24.8366 0 32 7.16344 32 16C32 24.8366 24.8366 32 16 32C7.16344 32 0 24.8366 0 16C0 7.16344 7.16344 0 16 0ZM14.2021 13.3369L8.41602 13.873L12.7812 17.708L11.5039 23.377L16.5 20.4102L21.4961 23.377L20.2188 17.708L24.584 13.873L18.7979 13.3369L16.5 8L14.2021 13.3369Z" fill="#6B6B6B"/>
@@ -164,7 +169,7 @@ export default function Place() {
                     <path d="M12 13.4498L16.35 9.0998C16.6 8.8498 16.8917 8.72897 17.225 8.7373C17.5583 8.74564 17.85 8.8748 18.1 9.1248C18.35 9.3748 18.475 9.66647 18.475 9.9998C18.475 10.3331 18.35 10.6248 18.1 10.8748L13.425 15.5748C13.225 15.7748 13 15.9248 12.75 16.0248C12.5 16.1248 12.25 16.1748 12 16.1748C11.75 16.1748 11.5 16.1248 11.25 16.0248C11 15.9248 10.775 15.7748 10.575 15.5748L5.87499 10.8748C5.62499 10.6248 5.50415 10.329 5.51249 9.9873C5.52082 9.64564 5.64999 9.3498 5.89999 9.0998C6.14999 8.8498 6.44165 8.7248 6.77499 8.7248C7.10832 8.7248 7.39999 8.8498 7.64999 9.0998L12 13.4498Z" fill="#1C1B1F"/>
                     </g>
                 </svg>
-            </a>
+            </button>
         </div>
       </div>
       <div className={styles.mapBox}>

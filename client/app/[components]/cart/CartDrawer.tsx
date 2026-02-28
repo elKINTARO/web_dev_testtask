@@ -41,19 +41,19 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         <div className={styles.content}>
-          {items.length === 0 && items[0].restaurant.name !== "Box" ? (
+          {items.length === 0 ? (
             <p className={styles.empty}>Your cart is empty</p>
           ) : (
             <ul className={styles.list}>
               {items.map((item) => (
-                <li key={`${item.restaurant.id}-${item.dish!.id}`} className={styles.item}>
+                <li key={`${item.restaurant.id}-${item.dish.id}`} className={styles.item}>
                   <img
-                    src={item.dish!.image}
-                    alt={item.dish!.name}
+                    src={item.dish.image}
+                    alt={item.dish.name}
                     className={styles.itemImage}
                   />
                   <div className={styles.itemInfo}>
-                    <span className={styles.itemName}>{item.dish!.name}</span>
+                    <span className={styles.itemName}>{item.dish.name}</span>
                     <span className={styles.itemRestaurant}>
                       {item.restaurant.name}
                     </span>
@@ -64,7 +64,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           onClick={() =>
                             updateQuantity(
                               item.restaurant.id,
-                              item.dish!.id,
+                              item.dish.id,
                               item.quantity - 1
                             )
                           }
@@ -78,7 +78,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           onClick={() =>
                             updateQuantity(
                               item.restaurant.id,
-                              item.dish!.id,
+                              item.dish.id,
                               item.quantity + 1
                             )
                           }
@@ -88,12 +88,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </button>
                       </div>
                       <span className={styles.itemPrice}>
-                        ${(item.dish!.price * item.quantity).toFixed(2)}
+                        ${(item.dish.price * item.quantity).toFixed(2)}
                       </span>
                       <button
                         type="button"
                         onClick={() =>
-                          removeItem(item.restaurant.id, item.dish!.id)
+                          removeItem(item.restaurant.id, item.dish.id)
                         }
                         className={styles.removeBtn}
                         aria-label="Remove item"
