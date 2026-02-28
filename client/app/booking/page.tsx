@@ -62,15 +62,12 @@ export default function Booking() {
       const foodItems = items.filter(
         (i) => i.restaurant.id !== PACKAGE_RESTAURANT.id
       );
-      const byCafe = foodItems.reduce<Map<number, typeof foodItems>>(
-        (acc, item) => {
-          const cafeId = item.restaurant.id;
-          if (!acc.has(cafeId)) acc.set(cafeId, []);
-          acc.get(cafeId)!.push(item);
-          return acc;
-        },
-        new Map()
-      );
+      const byCafe = new Map<number, typeof foodItems>();
+      for (const item of foodItems) {
+        const cafeId = item.restaurant.id;
+        if (!byCafe.has(cafeId)) byCafe.set(cafeId, []);
+        byCafe.get(cafeId)!.push(item);
+      }
 
       const orders: ApiOrderResponse[] = [];
       for (const [, cafeItems] of byCafe) {
