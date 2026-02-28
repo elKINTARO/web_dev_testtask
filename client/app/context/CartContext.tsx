@@ -10,6 +10,25 @@ import {
 } from "react";
 import type { Dish, Restaurant } from "@/lib/types";
 
+export const PACKAGE_RESTAURANT: Restaurant = {
+  id: 999,
+  name: "Box",
+  image:
+    "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-square-cardboard-box-png-image_10211619.png",
+  rating: 0,
+  category: "Box",
+  deliveryTime: "25-35 min",
+  dishes: [],
+};
+
+export const PACKAGE_DISH: Dish = {
+  id: 0,
+  name: "Package",
+  price: 0,
+  image:
+    "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-square-cardboard-box-png-image_10211619.png",
+};
+
 export interface CartItem {
   restaurant: Restaurant;
   dish: Dish;
@@ -19,6 +38,7 @@ export interface CartItem {
 interface CartContextValue {
   items: CartItem[];
   addItem: (restaurant: Restaurant, dish: Dish, quantity?: number) => void;
+  addPackageItem: (quantity?: number) => void;
   removeItem: (restaurantId: number, dishId: number) => void;
   updateQuantity: (restaurantId: number, dishId: number, quantity: number) => void;
   clearCart: () => void;
@@ -52,6 +72,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     },
     []
+  );
+
+  const addPackageItem = useCallback(
+    (quantity = 1) => {
+      addItem(PACKAGE_RESTAURANT, PACKAGE_DISH, quantity);
+    },
+    [addItem]
   );
 
   const removeItem = useCallback(
@@ -108,13 +135,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       items,
       addItem,
+      addPackageItem,
       removeItem,
       updateQuantity,
       clearCart,
       total,
       itemCount,
     }),
-    [items, addItem, removeItem, updateQuantity, clearCart, total, itemCount]
+    [items, addItem, addPackageItem, removeItem, updateQuantity, clearCart, total, itemCount]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

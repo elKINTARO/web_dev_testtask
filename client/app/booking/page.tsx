@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./style.module.css";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, PACKAGE_RESTAURANT } from "@/app/context/CartContext";
 import { usePackageRoute } from "@/app/context/PackageRouteContext";
 import { createOrder } from "@/lib/api";
 
@@ -19,7 +19,10 @@ export default function Booking() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isPackageMode = !!packageRoute && items.length === 0;
+  const hasOnlyPackage =
+    items.length > 0 &&
+    items.every((i) => i.restaurant.id === PACKAGE_RESTAURANT.id);
+  const isPackageMode = !!packageRoute && (items.length === 0 || hasOnlyPackage);
 
   const handleBack = () => {
     if (isPackageMode) {
@@ -36,6 +39,7 @@ export default function Booking() {
       setError(null);
       try {
         clearRoute();
+        clearCart();
         router.replace("/place");
       } catch {
         setError("Something went wrong");
@@ -51,12 +55,18 @@ export default function Booking() {
     setError(null);
 
     try {
-      const byCafe = items.reduce<Map<number, typeof items>>((acc, item) => {
-        const cafeId = item.restaurant.id;
-        if (!acc.has(cafeId)) acc.set(cafeId, []);
-        acc.get(cafeId)!.push(item);
-        return acc;
-      }, new Map());
+      const foodItems = items.filter(
+        (i) => i.restaurant.id !== PACKAGE_RESTAURANT.id
+      );
+      const byCafe = foodItems.reduce<Map<number, typeof foodItems>>(
+        (acc, item) => {
+          const cafeId = item.restaurant.id;
+          if (!acc.has(cafeId)) acc.set(cafeId, []);
+          acc.get(cafeId)!.push(item);
+          return acc;
+        },
+        new Map()
+      );
 
       for (const [, cafeItems] of byCafe) {
         await createOrder({

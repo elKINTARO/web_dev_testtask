@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import styles from "./style.module.css";
 import { useLastURL } from "../[cash]/LastURL";
 import { usePackageRoute } from "@/app/context/PackageRouteContext";
+import { useCart } from "@/app/context/CartContext";
 
 const Map = dynamic(() => import("../[components]/map/mape"), {
   ssr: false,
@@ -30,6 +31,7 @@ export default function Place() {
   const router = useRouter();
   const { goToLastURL } = useLastURL();
   const { setRoute } = usePackageRoute();
+  const { addPackageItem } = useCart();
   const [fromPos, setFromPos] = useState<[number, number]>(DEFAULT_FROM);
   const [toPos, setToPos] = useState<[number, number]>(DEFAULT_TO);
 
@@ -42,8 +44,9 @@ export default function Place() {
   const handleSendBox = useCallback(() => {
     if (!canSendBox) return;
     setRoute(fromPos, toPos);
+    addPackageItem(1);
     router.push("/booking");
-  }, [canSendBox, fromPos, toPos, setRoute, router]);
+  }, [canSendBox, fromPos, toPos, setRoute, addPackageItem, router]);
 
   const handleFromLat = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
