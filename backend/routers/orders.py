@@ -158,3 +158,11 @@ async def get_order(
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")
     return await _build_order_response(order, db)
+
+@router.get("", response_model=list[OrderResponse])
+async def get_all_orders(db: Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(select(Order))
+    orders = result.scalars().all()
+    if not orders:
+        raise HTTPException(status_code=404, detail="No orders found.")
+    return [await _build_order_response(order, db) for order in orders]

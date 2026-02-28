@@ -1,0 +1,111 @@
+.container {
+  padding: 24px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.tableCard {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.header {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table tr {
+  border-bottom: 1px solid #f9fafb;
+}
+
+.table th {
+  padding: 16px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.table td {
+  padding: 16px;
+  vertical-align: middle;
+}
+
+.productName {
+  font-weight: 600;
+  color: #111827;
+}
+
+.category {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.droneId {
+  font-family: monospace;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusAccepted { background: #ecfdf5; color: #059669; }
+.statusPending { background: #fffbeb; color: #d97706; }
+.statusCompleted { background: #eff6ff; color: #2563eb; }
+.statusRejected { background: #fef2f2; color: #dc2626; }
+
+.mapButton {
+  background: #f3f4f6;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.mapButton:hover {
+  background: #e5e7eb;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 16px;
+  overflow: hidden;
+}

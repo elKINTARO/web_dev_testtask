@@ -44,6 +44,11 @@ export interface ApiDish {
   cafe_id: number;
 }
 
+export interface ApiOrder {
+  cafe: ApiCafe,
+  dish: ApiDish,
+}
+
 export interface ApiCafeDetail extends ApiCafe {
   dishes: ApiDish[];
 }
@@ -68,6 +73,11 @@ export async function getCafes(category?: string): Promise<ApiCafe[]> {
 export async function getCafe(id: number): Promise<ApiCafeDetail> {
   return fetchApi<ApiCafeDetail>(`/cafes/${id}`);
 }
+
+export async function getOrders(id: number): Promise<ApiCafeDetail> {
+  return fetchApi<ApiCafeDetail>(`/orders`);
+}
+
 
 export async function createOrder(payload: OrderCreate) {
   return fetchApi<unknown>("/orders", {
