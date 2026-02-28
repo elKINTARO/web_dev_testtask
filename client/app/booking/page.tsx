@@ -8,7 +8,7 @@ import { useCart, PACKAGE_RESTAURANT } from "@/app/context/CartContext";
 import { usePackageRoute } from "@/app/context/PackageRouteContext";
 import { createOrder, type ApiOrderResponse } from "@/lib/api";
 
-const Map = dynamic(() => import("../[components]/map/mape"), { ssr: false });
+const MapView = dynamic(() => import("../[components]/map/mape"), { ssr: false });
 
 const DEFAULT_LAT = 40.7128;
 const DEFAULT_LON = -74.006;
@@ -125,7 +125,7 @@ export default function Booking() {
                 <p className={styles.totalLine}>Total: ${order.total_amount.toFixed(2)}</p>
               </div>
               <div className={styles.mapBox}>
-                <Map
+                <MapView
                   fromPos={[order.from_lat, order.from_lon]}
                   toPos={[order.to_lat, order.to_lon]}
                   height={200}
