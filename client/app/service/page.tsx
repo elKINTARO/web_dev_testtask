@@ -22,6 +22,10 @@ export default function Service() {
                 <img src="/service/box.png" alt="" />
                 <samp>Package</samp>
             </a>
+            <a onClick={() => changeURL("orders")} href="/orders" className={styles.typeBox}>
+                <span className={styles.ordersIcon}>📋</span>
+                <samp>Orders</samp>
+            </a>
         </div>
       </div>
     </main>

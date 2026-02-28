@@ -16,6 +16,7 @@ import L from "leaflet";
 interface MapProps {
   fromPos: [number, number];
   toPos: [number, number];
+  height?: number;
 }
 
 function FitBounds({ fromPos, toPos }: MapProps) {
@@ -29,7 +30,7 @@ function FitBounds({ fromPos, toPos }: MapProps) {
   return null;
 }
 
-export default function Map({ fromPos, toPos }: MapProps) {
+export default function Map({ fromPos, toPos, height = 550 }: MapProps) {
   const route: [number, number][] = [fromPos, toPos];
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Map({ fromPos, toPos }: MapProps) {
       <MapContainer
         center={fromPos}
         zoom={13}
-        style={{ height: "550px", width: "100%" }}
+        style={{ height: `${height}px`, width: "100%" }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <FitBounds fromPos={fromPos} toPos={toPos} />

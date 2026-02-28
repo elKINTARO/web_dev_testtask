@@ -55,9 +55,26 @@ class OrderItemResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class OrderDishItem(BaseModel):
+    dish_id: int
+    quantity: int
+
+
+class OrderCafeSummary(BaseModel):
+    cafe_id: int
+    items: list[OrderDishItem]
+
+
 class OrderResponse(BaseModel):
     id: int
     cafe_id: int
+    from_lat: float = Field(..., description="Start point latitude (cafe)")
+    from_lon: float = Field(..., description="Start point longitude (cafe)")
+    to_lat: float = Field(..., description="Delivery point latitude")
+    to_lon: float = Field(..., description="Delivery point longitude")
+    order_summary: list[OrderCafeSummary] = Field(
+        ..., description="Order grouped by cafe: cafe_id + dish_ids"
+    )
     end_lat: float
     end_lon: float
     subtotal: float

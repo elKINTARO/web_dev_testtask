@@ -47,11 +47,30 @@ export interface ApiDish {
 export interface ApiOrder {
   id: number;
   cafe_id: number;
+export interface ApiOrderDishItem {
+  dish_id: number;
+  quantity: number;
+}
+
+export interface ApiOrderCafeSummary {
+  cafe_id: number;
+  items: ApiOrderDishItem[];
+}
+
+export interface ApiOrderResponse {
+  id: number;
+  cafe_id: number;
+  from_lat: number;
+  from_lon: number;
+  to_lat: number;
+  to_lon: number;
+  order_summary: ApiOrderCafeSummary[];
   end_lat: number;
   end_lon: number;
   subtotal: number;
   tax_amount: number;
   total_amount: number;
+  breakdown: Record<string, unknown>;
   distance_km: number;
   estimated_flight_time: number;
   status: string;
@@ -62,6 +81,7 @@ export interface ApiOrder {
     quantity: number;
   }[];
   cafe_name?: string; 
+  items: { id: number; order_id: number; dish_id: number; quantity: number }[];
 }
 
 export interface ApiCafeDetail extends ApiCafe {
@@ -95,6 +115,16 @@ export async function getOrders(): Promise<ApiOrder[]> {
 
 export async function createOrder(payload: OrderCreate) {
   return fetchApi<unknown>("/orders", {
+export async function getOrders(): Promise<ApiOrderResponse[]> {
+  return fetchApi<ApiOrderResponse[]>("/orders");
+}
+
+export async function getOrder(id: number): Promise<ApiOrderResponse> {
+  return fetchApi<ApiOrderResponse>(`/orders/${id}`);
+}
+
+export async function createOrder(payload: OrderCreate): Promise<ApiOrderResponse> {
+  return fetchApi<ApiOrderResponse>("/orders", {
     method: "POST",
     body: JSON.stringify(payload),
   });
