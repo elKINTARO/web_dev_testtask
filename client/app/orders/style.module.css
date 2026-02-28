@@ -20,6 +20,16 @@
   align-items: center;
 }
 
+.backLink {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
 .title {
   font-size: 18px;
   font-weight: 600;
@@ -106,6 +116,54 @@
   background: white;
   width: 90%;
   max-width: 900px;
+  max-height: 90vh;
   border-radius: 16px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalRoute {
+  padding: 12px 20px;
+  background: #f9fafb;
+  font-size: 14px;
+}
+
+.modalRoute p {
+  margin: 4px 0;
+}
+
+.modalOrderSummary {
+  padding: 12px 20px;
+  font-size: 14px;
+}
+
+.modalOrderSummary div {
+  margin-bottom: 4px;
+}
+
+.modalMap {
+  flex: 1;
+  min-height: 300px;
+}
+
+.modalMap > div {
+  height: 100% !important;
+}
+
+.routeCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.totalCell {
+  font-weight: 600;
+}
+
+.emptyState {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
 }

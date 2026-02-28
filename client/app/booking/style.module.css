@@ -329,3 +329,71 @@
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+/* Order confirmation */
+.orderCard {
+  background: var(--white-grey, #f5f5f5);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e5e5;
+}
+
+.routeBlock {
+  margin-bottom: 16px;
+}
+
+.routeBlock h3,
+.orderSummaryBlock h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #333;
+}
+
+.coordRow {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.coordLabel {
+  font-weight: 600;
+  min-width: 40px;
+}
+
+.orderSummaryBlock {
+  margin-bottom: 16px;
+}
+
+.cafeSummary {
+  margin-bottom: 12px;
+}
+
+.cafeSummary ul {
+  margin: 4px 0 0 16px;
+  padding: 0;
+}
+
+.cafeSummary li {
+  font-size: 14px;
+  color: #555;
+}
+
+.totalLine {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 12px 0 0;
+}
+
+.mapBox {
+  margin-top: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.mapBox > div {
+  height: 100% !important;
+}

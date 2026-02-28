@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import styles from "./style.module.css";
 import { useCart, PACKAGE_RESTAURANT } from "@/app/context/CartContext";
 import { usePackageRoute } from "@/app/context/PackageRouteContext";
-import { createOrder } from "@/lib/api";
+import { createOrder, type ApiOrderResponse } from "@/lib/api";
+
+const Map = dynamic(() => import("../[components]/map/mape"), { ssr: false });
 
 const DEFAULT_LAT = 40.7128;
 const DEFAULT_LON = -74.006;
@@ -18,6 +21,7 @@ export default function Booking() {
   const [endLon, setEndLon] = useState(DEFAULT_LON);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [createdOrders, setCreatedOrders] = useState<ApiOrderResponse[] | null>(null);
 
   const hasOnlyPackage =
     items.length > 0 &&
@@ -68,8 +72,9 @@ export default function Booking() {
         new Map()
       );
 
+      const orders: ApiOrderResponse[] = [];
       for (const [, cafeItems] of byCafe) {
-        await createOrder({
+        const order = await createOrder({
           cafe_id: cafeItems[0].restaurant.id,
           end_lat: endLat,
           end_lon: endLon,
@@ -78,16 +83,73 @@ export default function Booking() {
             quantity: i.quantity,
           })),
         });
+        orders.push(order);
       }
 
       clearCart();
-      router.replace("/delivery");
+      setCreatedOrders(orders);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to create order");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (createdOrders && createdOrders.length > 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <h2 className={styles.title}>Order confirmed</h2>
+          {createdOrders.map((order) => (
+            <div key={order.id} className={styles.orderCard}>
+              <div className={styles.routeBlock}>
+                <h3>Route</h3>
+                <div className={styles.coordRow}>
+                  <span className={styles.coordLabel}>From</span>
+                  <span>{order.from_lat.toFixed(4)}, {order.from_lon.toFixed(4)}</span>
+                </div>
+                <div className={styles.coordRow}>
+                  <span className={styles.coordLabel}>To</span>
+                  <span>{order.to_lat.toFixed(4)}, {order.to_lon.toFixed(4)}</span>
+                </div>
+              </div>
+              <div className={styles.orderSummaryBlock}>
+                <h3>Order #{order.id}</h3>
+                {order.order_summary.map((cafe) => (
+                  <div key={cafe.cafe_id} className={styles.cafeSummary}>
+                    <strong>Cafe {cafe.cafe_id}</strong>
+                    <ul>
+                      {cafe.items.map((item, i) => (
+                        <li key={i}>Dish {item.dish_id} × {item.quantity}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <p className={styles.totalLine}>Total: ${order.total_amount.toFixed(2)}</p>
+              </div>
+              <div className={styles.mapBox}>
+                <Map
+                  fromPos={[order.from_lat, order.from_lon]}
+                  toPos={[order.to_lat, order.to_lon]}
+                  height={200}
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              setCreatedOrders(null);
+              router.replace("/delivery");
+            }}
+            className={styles.mainButton}
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

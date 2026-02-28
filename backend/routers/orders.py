@@ -8,7 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from database import get_db
 from models import Cafe, Dish, Order, OrderItem, OrderStatus
-from schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderStatusUpdate
+from schemas import (
+    OrderCreate,
+    OrderResponse,
+    OrderItemResponse,
+    OrderStatusUpdate,
+    OrderCafeSummary,
+    OrderDishItem,
+)
 from services.tax import calculate_order_tax
 from utils.routing import estimate_flight_time, haversine_distance
 
@@ -26,14 +33,32 @@ VALID_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
 
 
 async def _build_order_response(order: Order, db: AsyncSession) -> OrderResponse:
-    """Load OrderItems for an order and build the response schema."""
+    """Load OrderItems and Cafe for an order and build the response schema."""
+    cafe_result = await db.execute(select(Cafe).where(Cafe.id == order.cafe_id))
+    cafe = cafe_result.scalars().first()
+    if not cafe:
+        raise HTTPException(status_code=500, detail="Cafe not found for order")
+
     items_result = await db.execute(
         select(OrderItem).where(OrderItem.order_id == order.id)
     )
     items = items_result.scalars().all()
+
+    order_summary = [
+        OrderCafeSummary(
+            cafe_id=order.cafe_id,
+            items=[OrderDishItem(dish_id=i.dish_id, quantity=i.quantity) for i in items],
+        )
+    ]
+
     return OrderResponse(
         id=order.id,
         cafe_id=order.cafe_id,
+        from_lat=cafe.lat,
+        from_lon=cafe.lon,
+        to_lat=order.end_lat,
+        to_lon=order.end_lon,
+        order_summary=order_summary,
         end_lat=order.end_lat,
         end_lon=order.end_lon,
         subtotal=order.subtotal,
@@ -148,6 +173,13 @@ async def update_order_status(
     return await _build_order_response(order, db)
 
 
+@router.get("", response_model=list[OrderResponse])
+async def get_all_orders(db: Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(select(Order).order_by(Order.id.desc()))
+    orders = result.scalars().all()
+    return [await _build_order_response(order, db) for order in orders]
+
+
 @router.get("/{order_id}", response_model=OrderResponse)
 async def get_order(
     order_id: int,
@@ -158,11 +190,3 @@ async def get_order(
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")
     return await _build_order_response(order, db)
-
-@router.get("", response_model=list[OrderResponse])
-async def get_all_orders(db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(select(Order))
-    orders = result.scalars().all()
-    if not orders:
-        raise HTTPException(status_code=404, detail="No orders found.")
-    return [await _build_order_response(order, db) for order in orders]
