@@ -20,10 +20,6 @@ export interface Restaurant {
   dishes: Dish[];
 }
 
-function dishImage(cafeId: number, dishId: number): string {
-  return `https://picsum.photos/seed/c${cafeId}d${dishId}/400/300`;
-}
-
 export function apiCafeToRestaurant(cafe: ApiCafe, dishes?: ApiDish[]): Restaurant {
   return {
     id: cafe.id,
@@ -38,7 +34,7 @@ export function apiCafeToRestaurant(cafe: ApiCafe, dishes?: ApiDish[]): Restaura
       id: d.id,
       name: d.name,
       price: d.price,
-      image: dishImage(cafe.id, d.id),
+      image: d.image,
       cafe_id: d.cafe_id,
     })),
   };

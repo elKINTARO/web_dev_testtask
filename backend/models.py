@@ -42,6 +42,7 @@ class Dish(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
+    image: Mapped[str] = mapped_column(String, nullable=True)
     cafe_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("cafes.id"), nullable=False, index=True
     )

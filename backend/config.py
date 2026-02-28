@@ -10,8 +10,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Database
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:password@localhost:5432/drone_delivery"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:1234@localhost:5432/drone_delivery"
     DB_ECHO: bool = False
 
     # Nominatim reverse geocoding

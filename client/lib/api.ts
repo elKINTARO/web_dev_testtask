@@ -38,6 +38,7 @@ export interface ApiCafe {
 
 export interface ApiDish {
   id: number;
+  image: string
   name: string;
   price: number;
   cafe_id: number;

@@ -15,8 +15,8 @@ const Map = dynamic(() => import("../[components]/map/mape"), {
   ),
 });
 
-const DEFAULT_FROM: [number, number] = [28.5284, 78.5284];
-const DEFAULT_TO: [number, number] = [35.9284, 62.9284];
+const DEFAULT_FROM: [number, number] = [50.42119688, 31,4];
+const DEFAULT_TO: [number, number] = [50.405654632970766, 30.753491846485602];
 
 function parseCoord(value: string): number {
   const n = parseFloat(value);

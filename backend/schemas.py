@@ -8,6 +8,7 @@ from models import OrderStatus, DroneStatus
 
 class DishResponse(BaseModel):
     id: int
+    image: Optional[str]
     name: str
     price: float
     cafe_id: int
