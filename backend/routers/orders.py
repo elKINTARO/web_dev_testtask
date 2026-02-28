@@ -8,7 +8,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from database import get_db
 from models import Cafe, Dish, Order, OrderItem, OrderStatus
-from schemas import OrderCreate, OrderImportResponse, OrderResponse, OrderItemResponse, OrderDishItem, OrderCafeSummary, OrderStatusUpdate
+from schemas import (
+    OrderImportResponse,
+    OrderCreate,
+    OrderResponse,
+    OrderItemResponse,
+    OrderStatusUpdate,
+    OrderCafeSummary,
+    OrderDishItem,
+)
 from services.tax import calculate_order_tax
 from utils.routing import estimate_flight_time, haversine_distance
 import csv
@@ -28,6 +36,7 @@ VALID_TRANSITIONS: dict[OrderStatus, set[OrderStatus]] = {
 
 
 async def _build_order_response(order: Order, db: AsyncSession) -> OrderResponse:
+    """Load OrderItems and Cafe for an order and build the response schema."""
     cafe_result = await db.execute(select(Cafe).where(Cafe.id == order.cafe_id))
     cafe = cafe_result.scalars().first()
     if not cafe:
@@ -185,14 +194,6 @@ async def get_order(
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")
     return await _build_order_response(order, db)
 
-@router.get("", response_model=list[OrderResponse])
-async def get_all_orders(db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(select(Order))
-    orders = result.scalars().all()
-    if not orders:
-        raise HTTPException(status_code=404, detail="No orders found.")
-    return [await _build_order_response(order, db) for order in orders]
-
 @router.post("/import-csv", response_model=OrderImportResponse)
 async def import_orders_from_csv( cafe_id: int, file: UploadFile = File(...),db: AsyncSession = Depends(get_db)):
     cafe_result = await db.execute(select(Cafe).where(Cafe.id == cafe_id))
@@ -253,4 +254,3 @@ async def import_orders_from_csv( cafe_id: int, file: UploadFile = File(...),db:
         successfully_created=created_count,
         errors=errors[:10]
     )
-    return await _build_order_response(order, db)
