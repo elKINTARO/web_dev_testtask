@@ -25,5 +25,5 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db():
     async with engine.begin() as conn:
-        from models import Cafe, Dish, Order, OrderItem  # noqa: F401 — registers all tables
+        from models import Cafe, Dish, Drone, Order, OrderItem  # noqa: F401 — registers all tables
         await conn.run_sync(Base.metadata.create_all)

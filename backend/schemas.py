@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-from models import OrderStatus
+from models import OrderStatus, DroneStatus
 
 
 class DishResponse(BaseModel):

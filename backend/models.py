@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime, timezone
 from typing import Any, Optional
-import enum
+
 
 from sqlalchemy import DateTime, Float, Integer, JSON, String, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column
@@ -15,6 +15,12 @@ class OrderStatus(str, enum.Enum):
     delivered = "delivered"
     lost = "lost"
     damaged = "damaged"
+
+
+class DroneStatus(str, enum.Enum):
+    available = "available"
+    busy = "busy"
+    maintenance = "maintenance"
 
 
 class Cafe(Base):
@@ -77,3 +83,17 @@ class OrderItem(Base):
         Integer, ForeignKey("dishes.id"), nullable=False, index=True
     )
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class Drone(Base):
+    __tablename__ = "drones"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    battery_level: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[DroneStatus] = mapped_column(
+        Enum(DroneStatus), default=DroneStatus.available, nullable=False
+    )
+    current_lat: Mapped[float] = mapped_column(Float, nullable=False)
+    current_lon: Mapped[float] = mapped_column(Float, nullable=False)
+    max_radius: Mapped[float] = mapped_column(Float, nullable=False)
+    max_weight: Mapped[float] = mapped_column(Float, nullable=False)
